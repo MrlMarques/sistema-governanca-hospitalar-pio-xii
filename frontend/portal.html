@@ -1,1 +1,111 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#9A2B2E">
+    <title>Portal da Governança • Hospital Pio XII</title>
+    <style>
+        :root { --bordo: #9A2B2E; --bordo-escuro: #6E1B1E; --card-bg: #FFFFFF; --border: #E2E8F0; --text-main: #0F172A; --text-sec: #334155; --text-muted: #64748B; --verde: #15803D; --vermelho: #B91C1C; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: #F8FAFC; min-height: 100vh; color: var(--text-main); padding-bottom: 24px; }
+        .top-shell { background: linear-gradient(135deg, var(--bordo) 0%, var(--bordo-escuro) 100%); color: #FFFFFF; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .brand-portal { display: flex; align-items: center; gap: 12px; }
+        .brand-logo-box { background: #FFFFFF; padding: 6px 9px; border-radius: 10px; display: flex; }
+        .brand-logo-box img { height: 26px; width: auto; }
+        .brand-info h1 { font-size: 1.05rem; font-weight: 800; }
+        .brand-info span { font-size: 0.72rem; color: rgba(255,255,255,0.85); }
+        .btn-alertas { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; padding: 8px 12px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .badge-count { background: var(--vermelho); color: #FFFFFF; font-size: 0.7rem; padding: 1px 6px; border-radius: 99px; }
+        .portal-main { max-width: 960px; margin: 0 auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 16px; }
+        .grid-atalhos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media(min-width:640px) { .grid-atalhos { grid-template-columns: repeat(4, 1fr); } }
+        .card-atalho { background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; text-decoration: none; color: var(--text-main); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .icon-circle { width: 44px; height: 44px; border-radius: 12px; background: #FDF2F2; color: var(--bordo); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; }
+        .iframe-container { background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+        .iframe-nav-bar { background: #1E293B; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; }
+        .iframe-nav-tabs { display: flex; gap: 6px; }
+        .tab-iframe { background: #334155; color: #CBD5E1; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+        .tab-iframe.active { background: var(--bordo); color: #FFFFFF; }
+        .iframe-frame { width: 100%; height: 82vh; border: none; display: block; }
+        .drawer-bg { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 200; justify-content: flex-end; }
+        .drawer-bg.open { display: flex; }
+        .drawer-box { background: #FFFFFF; width: 100%; max-width: 440px; height: 100%; padding: 20px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+        .drawer-top { display: flex; justify-content: space-between; align-items: center; }
+        .btn-x-drawer { background: #F1F5F9; border: none; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; cursor: pointer; }
+        .falha-card-item { background: #F8FAFC; border: 1px solid var(--border); border-left: 4px solid var(--vermelho); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+        .btn-criar-pdca-direto { background: var(--bordo); color: #FFFFFF; border: none; padding: 6px 10px; border-radius: 7px; font-size: 0.74rem; font-weight: 800; cursor: pointer; align-self: flex-start; }
+    </style>
+</head>
+<body>
+    <header class="top-shell">
+        <div class="brand-portal">
+            <div class="brand-logo-box"><img src="https://lh3.googleusercontent.com/d/1kGZL2la6BSI1GOK6uVw-jf7HDtU1LgAd" alt="Pio XII"></div>
+            <div class="brand-info"><h1>Hospital Pio XII</h1><span>Portal da Governança</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <a href="<?= webAppUrl ?>?page=tv" target="_blank" class="btn-alertas" style="text-decoration:none;"><span>📺 Modo TV</span></a>
+            <button type="button" class="btn-alertas" onclick="abrirGavetaFalhas()"><span>🚨 Falhas</span><span class="badge-count" id="contadorFalhas">0</span></button>
+        </div>
+    </header>
+    <main class="portal-main">
+        <div class="grid-atalhos">
+            <a href="javascript:void(0)" onclick="mudarIframe('<?!= webAppUrl ?>')" class="card-atalho"><div class="icon-circle">📋</div><strong>Checklist</strong><span>Auditoria</span></a>
+            <a href="javascript:void(0)" onclick="mudarIframe('<?!= webAppUrl ?>?page=dashboard')" class="card-atalho"><div class="icon-circle">📊</div><strong>Dashboard</strong><span>Indicadores ONA</span></a>
+            <a href="javascript:void(0)" onclick="mudarIframe('<?!= webAppUrl ?>?page=pdca')" class="card-atalho"><div class="icon-circle">🎯</div><strong>PDCA & Turno</strong><span>Planos e Plantão</span></a>
+            <a href="<?= webAppUrl ?>?page=tv" target="_blank" class="card-atalho"><div class="icon-circle">📺</div><strong>Modo TV</strong><span>Gestão à vista</span></a>
+        </div>
+        <div class="iframe-container">
+            <div class="iframe-nav-bar">
+                <div class="iframe-nav-tabs">
+                    <button type="button" class="tab-iframe active" id="tabChecklist" onclick="mudarIframe('<?!= webAppUrl ?>', this)">Checklist</button>
+                    <button type="button" class="tab-iframe" id="tabDash" onclick="mudarIframe('<?!= webAppUrl ?>?page=dashboard', this)">Dashboard</button>
+                    <button type="button" class="tab-iframe" id="tabPdca" onclick="mudarIframe('<?!= webAppUrl ?>?page=pdca', this)">PDCA & Turno</button>
+                </div>
+                <a href="javascript:void(0)" onclick="recarregarIframe()" style="color:#94A3B8; font-size:0.75rem; text-decoration:none; font-weight:700;">🔄 Atualizar</a>
+            </div>
+            <iframe id="framePortal" class="iframe-frame" src="<?= webAppUrl ?>"></iframe>
+        </div>
+    </main>
+    <div class="drawer-bg" id="drawerFalhas" onclick="if(event.target === this) fecharGavetaFalhas()">
+        <div class="drawer-box">
+            <div class="drawer-top"><h2>🚨 Falhas Recentes</h2><button class="btn-x-drawer" onclick="fecharGavetaFalhas()">✕</button></div>
+            <div id="listaFalhasGaveta" style="display:flex; flex-direction:column; gap:10px;"><div style="color:var(--text-muted); font-size:0.85rem;">Carregando histórico...</div></div>
+        </div>
+    </div>
+    <script>
+        const webAppUrlBase = "<?!= webAppUrl ?>";
+        function mudarIframe(url, btnEl) {
+            document.getElementById('framePortal').src = url;
+            if (btnEl) {
+                document.querySelectorAll('.tab-iframe').forEach(b => b.classList.remove('active'));
+                btnEl.classList.add('active');
+            }
+        }
+        function recarregarIframe() { const f = document.getElementById('framePortal'); f.src = f.src; }
+        function abrirGavetaFalhas() { document.getElementById('drawerFalhas').classList.add('open'); carregarFalhasGaveta(); }
+        function fecharGavetaFalhas() { document.getElementById('drawerFalhas').classList.remove('open'); }
+        function carregarFalhasGaveta() {
+            google.script.run.withSuccessHandler(dash => {
+                if (!dash || !dash.historico) return;
+                const comFalhas = dash.historico.filter(h => h.naoConformes > 0);
+                document.getElementById('contadorFalhas').textContent = comFalhas.length;
+                const cont = document.getElementById('listaFalhasGaveta');
+                if (!comFalhas.length) { cont.innerHTML = '<div style="color:var(--verde); font-weight:700;">✔ Nenhuma falha pendente!</div>'; return; }
+                cont.innerHTML = comFalhas.slice(0, 15).map(h => `
+                    <div class="falha-card-item">
+                        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted);"><span>${h.dataHora} • ${h.auditora}</span><span style="font-weight:800; color:var(--vermelho);">${h.naoConformes} falha(s)</span></div>
+                        <div style="font-size:0.9rem; font-weight:800;">🏥 ${h.setor} • Leito ${h.leito}</div>
+                        <div style="font-size:0.82rem; color:var(--text-sec);"><strong>Itens:</strong> ${h.falhas}</div>
+                        <button type="button" class="btn-criar-pdca-direto" onclick="criarPdcaDeFalha('${h.setor}', '${h.leito}', '${h.falhas.replace(/'/g, '')}')">+ Criar Ação 5W2H</button>
+                    </div>
+                `).join('');
+            }).obterDadosDashboard();
+        }
+        function criarPdcaDeFalha(setor, leito, itensFalha) {
+            fecharGavetaFalhas();
+            mudarIframe(webAppUrlBase + `?page=pdca&novo=1&item=${encodeURIComponent(itensFalha)}&leito=${encodeURIComponent(leito)}`);
+        }
+    </script>
+</body>
+</html>

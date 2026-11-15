@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão à Vista TV • Hospital Pio XII</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        html, body { height: 100%; width: 100%; background: #0B1120; color: #F8FAFC; display: flex; flex-direction: column; overflow: hidden; }
+        .tv-header { background: #1E293B; border-bottom: 2px solid #334155; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .tv-stage { flex: 1; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 20px; }
+        .big-num { font-size: 6rem; font-weight: 900; color: #22C55E; }
+    </style>
+</head>
+<body>
+    <header class="tv-header">
+        <h1>📺 Gestão à Vista • Hospital Pio XII</h1>
+        <strong id="relogioHora" style="font-size: 1.5rem;">--:--</strong>
+    </header>
+    <main class="tv-stage">
+        <span style="font-size: 1.2rem; text-transform: uppercase; color: #94A3B8; font-weight: 800;">Índice Global de Conformidade</span>
+        <div class="big-num" id="tvTaxaGlobal">--%</div>
+        <p style="color: #94A3B8;">Painel em tempo real atualizado a cada 5 minutos.</p>
+    </main>
+    <script>
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('relogioHora').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }, 1000);
+        google.script.run.withSuccessHandler(dash => {
+            if (dash) document.getElementById('tvTaxaGlobal').textContent = Number(dash.taxaConformidade || 0).toFixed(1) + '%';
+        }).obterDadosDashboard();
+    </script>
+</body>
+</html>

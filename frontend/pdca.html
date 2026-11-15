@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos de Ação • PDCA • Hospital Pio XII</title>
+    <style>
+        :root { --bordo: #9A2B2E; --bordo-escuro: #6E1B1E; --bg-page: #F1F5F9; --card-bg: #FFFFFF; --border: #E2E8F0; --text-main: #0F172A; --verde: #15803D; --vermelho: #B91C1C; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-page); color: var(--text-main); padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, var(--bordo) 0%, var(--bordo-escuro) 100%); color: #FFFFFF; padding: 16px; }
+        .container { max-width: 920px; margin: 0 auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 14px; }
+        .module-switcher { display: grid; grid-template-columns: repeat(4, 1fr); background: #E2E8F0; padding: 4px; border-radius: 12px; gap: 4px; }
+        .mod-btn { border: none; background: transparent; padding: 9px 4px; border-radius: 9px; font-size: 0.74rem; font-weight: 800; color: #334155; cursor: pointer; }
+        .mod-btn.active { background: #FFFFFF; color: var(--bordo); }
+        .card-pdca { background: #FFFFFF; border: 1px solid var(--border); border-left: 5px solid #D97706; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .card-pdca.done { border-left-color: var(--verde); }
+        .btn-acao { background: var(--bordo); color: #FFFFFF; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header class="header"><h1>🎯 Planos de Ação • PDCA & Cronograma</h1></header>
+    <main class="container">
+        <div class="module-switcher">
+            <button class="mod-btn active" onclick="mudarMod('planos')">📋 Planos</button>
+            <button class="mod-btn" onclick="mudarMod('sla')">⏱️ SLA</button>
+            <button class="mod-btn" onclick="mudarMod('crono')">📅 Cronograma</button>
+            <button class="mod-btn" onclick="mudarMod('plantao')">🔄 Plantão</button>
+        </div>
+        <div id="secaoPlanos" style="display:flex; flex-direction:column; gap:12px;">
+            <button class="btn-acao" onclick="alert('Abra o modal de novo plano')">+ Nova Ação 5W2H</button>
+            <div id="listaContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+    </main>
+    <script>
+        function mudarMod(m) { alert('Módulo selecionado: ' + m); }
+        google.script.run.withSuccessHandler(res => {
+            const planos = res.planosAcao || [];
+            document.getElementById('listaContainer').innerHTML = planos.length ? planos.map(p => `
+                <div class="card-pdca ${p.status === 'Concluido' ? 'done' : ''}">
+                    <strong>${p.protocolo} • ${p.alvo}</strong>
+                    <p style="font-size:0.85rem; color:#334155;">${p.descricao}</p>
+                    <div style="font-size:0.75rem; color:#64748B;">Resp: ${p.responsavel} • Prazo: ${p.prazoOuObs}</div>
+                </div>
+            `).join('') : '<div style="text-align:center; color:#64748B; padding:20px;">Nenhum plano cadastrado.</div>';
+        }).obterDadosPDCA();
+    </script>
+</body>
+</html>
